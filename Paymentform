@@ -78,8 +78,6 @@ body {
     margin-top: 20px;
 }
 
-script.js
-
 const registerBtn = document.getElementById('register-btn');
 const formContainer = document.getElementById('form-container');
 const form = document.getElementById('registration-form');
