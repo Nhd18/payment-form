@@ -114,6 +114,18 @@
       }
     }
 
+    // Check for a successful payment redirection (mocked logic)
+    window.onload = function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const paymentSuccess = urlParams.get('payment_status'); // Example: ?payment_status=success
+
+      if (paymentSuccess === 'success' && uploadedImage) {
+        displayImage(uploadedImage);
+      } else if (paymentSuccess === 'failure') {
+        alert('Payment failed. Please try again.');
+      }
+    };
+
     // Function to display image in the gallery
     function displayImage(imageSrc) {
       const gallery = document.getElementById('image-gallery');
@@ -125,20 +137,6 @@
       listItem.appendChild(img);
       gallery.appendChild(listItem);
     }
-
-    // Event listener for Razorpay redirection success
-    window.onload = function () {
-      const urlParams = new URLSearchParams(window.location.search);
-      const paymentStatus = urlParams.get('paymentStatus');
-
-      if (paymentStatus === 'success' && uploadedImage) {
-        // If payment is successful and image is uploaded
-        displayImage(uploadedImage);
-        alert('Payment successful! Your image has been listed.');
-      } else if (paymentStatus === 'failed') {
-        alert('Payment failed. Please try again.');
-      }
-    };
   </script>
 </body>
 </html>
