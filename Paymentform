@@ -1,144 +1,144 @@
-index.html
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Registration and Payment</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <h1>Register and Upload Your Image</h1>
-        <button id="register-btn">Register</button>
-
-        <div id="form-container">
-            <form id="registration-form">
-                <label for="name">Name:</label><br>
-                <input type="text" id="name" name="name" required><br><br>
-
-                <label for="number">Number:</label><br>
-                <input type="text" id="number" name="number" required><br><br>
-
-                <label for="email">E-mail:</label><br>
-                <input type="email" id="email" name="email" required><br><br>
-
-                <label for="image">Upload Image (PNG/JPEG):</label><br>
-                <input type="file" id="image" name="image" accept="image/png, image/jpeg" required><br><br>
-
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-
-        <div id="payment-container" style="display:none;">
-            <p>Redirecting to payment...</p>
-        </div>
-
-        <div id="success-container" style="display:none;">
-            <h2>Congratulations!</h2>
-            <p>Your image has been successfully uploaded.</p>
-            <img id="uploaded-image" src="" alt="Uploaded Image" style="max-width: 100%;">
-        </div>
-
-        <div id="failure-container" style="display:none;">
-            <h2>Payment Failed</h2>
-            <p>Please try again.</p>
-        </div>
-
-        <div class="images-list" id="images-list">
-            <h2>Uploaded Images</h2>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-</body>
-</html>
-
-styles.css
-
-body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-}
-.container {
-    max-width: 600px;
-    margin: auto;
-    text-align: center;
-}
-.images-list {
-    margin-top: 20px;
-}
-.images-list img {
-    max-width: 100px;
-    margin: 10px;
-}
-#form-container {
-    display: none;
-    margin-top: 20px;
-}
-
-const registerBtn = document.getElementById('register-btn');
-const formContainer = document.getElementById('form-container');
-const form = document.getElementById('registration-form');
-const paymentContainer = document.getElementById('payment-container');
-const successContainer = document.getElementById('success-container');
-const failureContainer = document.getElementById('failure-container');
-const imagesList = document.getElementById('images-list');
-let uploadedImage = "";
-
-registerBtn.addEventListener('click', () => {
-    formContainer.style.display = 'block';
-});
-
-form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const name = document.getElementById('name').value;
-    const number = document.getElementById('number').value;
-    const email = document.getElementById('email').value;
-    const imageFile = document.getElementById('image').files[0];
-
-    if (!imageFile) {
-        alert('Please upload an image!');
-        return;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Upload & Payment</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-        uploadedImage = reader.result;
-        redirectToPayment();
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 80%;
+      max-width: 600px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .image-upload {
+      margin: 20px 0;
+      text-align: center;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .images-list {
+      margin-top: 30px;
+    }
+
+    .images-list ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .images-list li {
+      margin: 10px 0;
+    }
+
+    #payment-section {
+      margin-top: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Upload Your Image and Complete Payment</h1>
+
+    <!-- Image Upload Section -->
+    <div class="image-upload">
+      <input type="file" id="imageInput" accept="image/*">
+      <button onclick="uploadImage()">Upload Image</button>
+    </div>
+
+    <!-- Razorpay Payment Button -->
+    <div id="payment-section">
+      <form id="payment-form">
+        <script src="https://checkout.razorpay.com/v1/payment-button.js" data-payment_button_id="pl_PVbxAySPiY2pSf" async></script>
+      </form>
+    </div>
+
+    <!-- Display Uploaded Images -->
+    <div class="images-list" id="images-list">
+      <h2>Uploaded Images</h2>
+      <ul id="image-gallery"></ul>
+    </div>
+  </div>
+
+  <script>
+    let uploadedImage = null; // Holds the uploaded image
+
+    // Function to handle image upload
+    function uploadImage() {
+      const imageInput = document.getElementById('imageInput');
+      const file = imageInput.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onloadend = function () {
+          // Store the uploaded image
+          uploadedImage = reader.result;
+          console.log('Image uploaded:', uploadedImage);
+          alert('Image uploaded successfully. Now proceed with the payment.');
+        };
+
+        reader.readAsDataURL(file);
+      } else {
+        alert('Please select an image.');
+      }
+    }
+
+    // Function to display image in the gallery
+    function displayImage(imageSrc) {
+      const gallery = document.getElementById('image-gallery');
+      const listItem = document.createElement('li');
+      const img = document.createElement('img');
+      img.src = imageSrc;
+      img.style.width = '100px';
+      img.style.height = '100px';
+      listItem.appendChild(img);
+      gallery.appendChild(listItem);
+    }
+
+    // Event listener for Razorpay redirection success
+    window.onload = function () {
+      const urlParams = new URLSearchParams(window.location.search);
+      const paymentStatus = urlParams.get('paymentStatus');
+
+      if (paymentStatus === 'success' && uploadedImage) {
+        // If payment is successful and image is uploaded
+        displayImage(uploadedImage);
+        alert('Payment successful! Your image has been listed.');
+      } else if (paymentStatus === 'failed') {
+        alert('Payment failed. Please try again.');
+      }
     };
-    reader.readAsDataURL(imageFile);
-});
-
-function redirectToPayment() {
-    formContainer.style.display = 'none';
-    paymentContainer.style.display = 'block';
-
-    setTimeout(() => {
-        window.location.href = 'https://rzp.io/rzp/Mee5get';
-
-        // Simulate payment success or failure
-        const paymentSuccess = Math.random() > 0.5;
-        if (paymentSuccess) {
-            showSuccessMessage();
-        } else {
-            showFailureMessage();
-        }
-    }, 2000);
-}
-
-function showSuccessMessage() {
-    paymentContainer.style.display = 'none';
-    successContainer.style.display = 'block';
-    document.getElementById('uploaded-image').src = uploadedImage;
-
-    const newImage = document.createElement('img');
-    newImage.src = uploadedImage;
-    imagesList.appendChild(newImage);
-}
-
-function showFailureMessage() {
-    paymentContainer.style.display = 'none';
-    failureContainer.style.display = 'block';
-}
+  </script>
+</body>
+</html>
